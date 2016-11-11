@@ -86,12 +86,12 @@ namespace TLSharp.Core
         var config = new TLRequestGetConfig();
         var request = new TLRequestInitConnection()
         {
-            api_id = _apiId,
-            app_version = "1.0",
-            device_model = "skynet",
-            lang_code = "De",
-            query = config,
-            system_version = "Roxflix"
+                api_id = _apiId,
+                app_version = "1.0",
+                device_model = "Desktop",
+                lang_code = "EN",
+                query = config,
+                system_version = "Windows 10"
         };
         var invokewithLayer = new TLRequestInvokeWithLayer() { layer = 57, query = request };
         await _sender.Send(invokewithLayer);

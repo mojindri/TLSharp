@@ -14,6 +14,7 @@ using TeleSharp.TL.Messages;
 using TLSharp.Core;
 using TLSharp.Core.Requests;
 using TLSharp.Core.Utils;
+using System.Collections.Generic;
 
 namespace TLSharp.Tests
 {
@@ -167,7 +168,7 @@ namespace TLSharp.Tests
 
             await client.ConnectAsync();
 
-            var dialogs = (TLDialogs) await client.GetUserDialogsAsync();
+            var dialogs = (TLDialogs)await client.GetUserDialogsAsync();
             var chat = dialogs.chats.lists
                 .Where(c => c.GetType() == typeof(TLChannel))
                 .Cast<TLChannel>()
@@ -253,7 +254,7 @@ namespace TLSharp.Tests
                     version = document.version
                 },
                 document.size);
-            
+
             Assert.IsTrue(resFile.bytes.Length > 0);
         }
 
@@ -271,9 +272,9 @@ namespace TLSharp.Tests
                 .Where(x => x.GetType() == typeof(TLUser))
                 .Cast<TLUser>()
                 .FirstOrDefault(x => x.id == 5880094);
-    
+
             var photo = ((TLUserProfilePhoto)user.photo);
-            var photoLocation = (TLFileLocation) photo.photo_big;
+            var photoLocation = (TLFileLocation)photo.photo_big;
 
             var resFile = await client.GetFile(new TLInputFileLocation()
             {
@@ -282,7 +283,7 @@ namespace TLSharp.Tests
                 volume_id = photoLocation.volume_id
             }, 1024);
 
-            var res = await client.GetUserDialogsAsync(); 
+            var res = await client.GetUserDialogsAsync();
 
             Assert.IsTrue(resFile.bytes.Length > 0);
         }
@@ -313,5 +314,20 @@ namespace TLSharp.Tests
             var result = await client.IsPhoneRegisteredAsync(NumberToAuthenticate);
             Assert.IsTrue(result);
         }
+        [TestMethod]
+        public async Task ImportContacts()
+        {
+            var contacts = new List<TLInputPhoneContact>();
+            var client = NewClient();
+            await client.ConnectAsync();
+            TLInputPhoneContact contact = new TLInputPhoneContact();
+            contact.first_name = "John";
+            contact.last_name = "smith";
+            contact.phone = "+4917627060000";
+            contacts.Add(contact);
+            var result = await client.ImportContactsAsync(contacts);
+            Assert.IsTrue(result.imported.lists.Count() > 0);
+        }
+
     }
 }
